@@ -21,22 +21,30 @@ class Bank:
         self.letters_already_guessed = []
 
     def pick_topic(self):
+        #check api
         self.current_topic = choice(self.topic_names)
+        if self.api_response_status == False:
+            print(f'Topic: {self.current_topic}')
+        else:
+            print("wrong topic")
+
 
 
     def get_word(self):
         response = requests.get(f"{self.api}", headers={'X-Api-Key': f"{self.api_key}"}, params={type: 'noun'})
         #use api
-        self.api_response.status == False
+        self.api_response_status = False
         if response.status_code == 200:
             word = json.loads(response.text)
             self.api_response_status = True
             self.current_word = word['word']
         else:
+            # self.pick_topic()
             self.current_word = choice(self.topics[self.current_topic])
             self.api_response_status = False
+
         #move print
-        print(f'Topic: {self.current_topic}')
+        # print(f'Topic: {self.current_topic}')
 
     def pick_word(self):
         self.current_word = choice(self.topics[self.current_topic])
@@ -99,12 +107,13 @@ class Main:
 
     while True:
         word_bank = Bank()
+        word_bank.pick_topic()
         word_bank.pick_word()
         player1 = Player(word_bank.current_word)
         game = Processes()
-
-        word_bank.pick_topic()
-        word_bank.pick_word()
+#move to up
+        # word_bank.pick_topic()
+        # word_bank.pick_word()
 
         while word_bank.not_solved and player1.lives > 0:
             while player1.guess_validation_incomplete:
